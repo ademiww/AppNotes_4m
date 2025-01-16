@@ -1,0 +1,22 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.example.appnotes_4m.views.PagerItemFragment">
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <Button
+        android:id="@+id/view_pager_btn"
+        android:layout_width="match_parent"
+        android:text="Next"
+        android:layout_gravity="center|bottom"
+        android:layout_marginBottom="28dp"
+        android:textSize="28sp"
+        android:layout_height="wrap_content"/>
+
+</FrameLayout>
