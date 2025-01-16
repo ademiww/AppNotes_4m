@@ -5,6 +5,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.viewpager2.widget.ViewPager2
+import com.example.appnotes_4m.adapters.OnBoardAdapter
 import com.example.repeatnavigation.R
 import com.example.repeatnavigation.databinding.FragmentOnBoardBinding
 
@@ -20,6 +22,7 @@ class OnBoardFragment : Fragment() {
         return binding.root
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initialize()
@@ -29,12 +32,13 @@ class OnBoardFragment : Fragment() {
         val onBoardPosition = requireArguments().getInt(ARG_ONBOARD_POSITION)
         when (onBoardPosition) {
             0 -> {
-                binding.onTxt.text = "Andorid"
+                binding.onTxt.text = "Android"
             }
 
             1 -> {
                 binding.onTxt.text = "IOS"
             }
+
         }
     }
 

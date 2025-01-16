@@ -12,15 +12,9 @@
         android:orderInCategory="2"/>
 
     <item
-        android:id="@+id/thirdFragment"
-        android:title="Profile"
-        android:icon="@drawable/ic_profile"
-        android:orderInCategory="3"/>
-
-    <item
         android:id="@+id/notesFragment"
         android:title="Notes"
-        android:icon="@drawable/ic_logo"
+        android:icon="@drawable/ic_profile"
         android:orderInCategory="4"/>
 
 </menu>
