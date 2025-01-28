@@ -9,8 +9,11 @@ data class Note(
     val description: String,
     val data: String,
     val color: Int
-) {
+)
+{
 
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0
+
+    constructor(): this("", "", "", 0)
 }

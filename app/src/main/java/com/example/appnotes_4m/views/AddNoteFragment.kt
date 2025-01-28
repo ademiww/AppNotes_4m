@@ -13,20 +13,19 @@ import com.example.appnotes_4m.App
 import com.example.appnotes_4m.data.model.Note
 import com.example.repeatnavigation.R
 import com.example.repeatnavigation.databinding.FragmentAddNoteBinding
+import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
 import java.util.Date
-
 
 class AddNoteFragment : Fragment() {
 
     private lateinit var binding: FragmentAddNoteBinding
-
+    private val firestore = FirebaseFirestore.getInstance()
     private var noteId: Int? = null
     private var color: Int? = null
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         binding = FragmentAddNoteBinding.inflate(layoutInflater)
         return binding.root
@@ -44,11 +43,17 @@ class AddNoteFragment : Fragment() {
             noteId = args.getInt("noteId", -1)
         }
         if (noteId != -1) {
-            val note = App.appDataBase?.noteDao()?.getNoteById(noteId!!)
-            note?.let { item ->
-                binding.etTitle.setText(item.title)
-                binding.etDescription.setText(item.description)
-                binding.tvData.text = item.data
+            val noteRef = firestore.collection("notes")
+                .document(noteId.toString())
+            noteRef.get().addOnSuccessListener { document ->
+                if (document.exists()) {
+                    val note = document.toObject(Note::class.java)
+                    note?.let { item ->
+                        binding.etTitle.setText(item.title)
+                        binding.etDescription.setText(item.description)
+                        binding.tvData.text = item.data
+                    }
+                }
             }
         }
     }
@@ -64,16 +69,19 @@ class AddNoteFragment : Fragment() {
             val title = etTitle.text.toString()
             val text = etDescription.text.toString()
             val data = tvData.text.toString()
-            val color = color
             if (noteId != -1) {
                 val updateNote = Note(title, text, data, color.hashCode())
                 updateNote.id = noteId!!
-                App.appDataBase?.noteDao()?.insertNote(updateNote)
-
+                firestore.collection("notes").document(noteId.toString())
+                    .set(updateNote).addOnSuccessListener {
+                        findNavController().navigateUp()
+                    }
             } else {
-                App.appDataBase?.noteDao()?.insertNote(Note(title, text, data, color.hashCode()))
+                val newNote = Note(title, text, data, color.hashCode())
+                firestore.collection("notes").add(newNote).addOnSuccessListener {
+                    findNavController().navigateUp()
+                }
             }
-            findNavController().navigateUp()
         }
     }
 

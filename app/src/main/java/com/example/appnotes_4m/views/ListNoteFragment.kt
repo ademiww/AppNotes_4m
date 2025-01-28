@@ -2,9 +2,11 @@ package com.example.appnotes_4m.views
 
 import android.app.AlertDialog
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -16,17 +18,19 @@ import com.example.appnotes_4m.data.model.Note
 import com.example.appnotes_4m.intetface.OnClickItem
 import com.example.repeatnavigation.R
 import com.example.repeatnavigation.databinding.FragmentNoteListBinding
+import com.google.firebase.Firebase
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.firestore
 
 
 class ListNoteFragment : Fragment(), OnClickItem {
 
     private lateinit var binding: FragmentNoteListBinding
     private lateinit var noteAdapter: Adapter
-    private val sharedPreferences = PreferenceHelper()
+    private val firestore = FirebaseFirestore.getInstance()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         binding = FragmentNoteListBinding.inflate(inflater, container, false)
         return binding.root
@@ -34,48 +38,59 @@ class ListNoteFragment : Fragment(), OnClickItem {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        sharedPreferences.init(requireContext())
-
-        val isLinearLayout = sharedPreferences.isLinearLayout()
-        setRecyclerViewLayout(isLinearLayout)
         noteAdapter = Adapter(this, this)
-        initialize()
+        initializeRecyclerView()
         setupListener()
-        getData()
+        getDataFromFirestore()
     }
 
-    private fun initialize() {
-        binding.recyclerView.apply {
-            layoutManager = LinearLayoutManager(requireContext())
-            adapter = noteAdapter
-        }
-    }
-
-    private fun setRecyclerViewLayout(isLinearLayout: Boolean) {
-        binding.recyclerView.layoutManager = if (isLinearLayout) {
+    private fun initializeRecyclerView() {
+        binding.recyclerView.layoutManager =
             LinearLayoutManager(requireContext())
-        } else {
-            GridLayoutManager(requireContext(), 2)
-        }
+        binding.recyclerView.adapter = noteAdapter
     }
 
-    private fun setupListener() = with(binding) {
-        fabAddNote.setOnClickListener {
+    private fun setupListener() {
+        binding.fabAddNote.setOnClickListener {
             findNavController().navigate(R.id.action_noteListFragment_to_addNoteFragment)
         }
-        btnChange.setOnClickListener {
-
-            val isCurrentlyLinear = binding.recyclerView.layoutManager is LinearLayoutManager
-            setRecyclerViewLayout(!isCurrentlyLinear)
-
-            sharedPreferences.setLinearLayout(!isCurrentlyLinear)
-        }
     }
 
-    private fun getData() {
-        App.appDataBase?.noteDao()?.getAll()?.observe(viewLifecycleOwner) { listNote ->
-            noteAdapter.submitList(listNote)
-        }
+    private fun getDataFromFirestore() {
+        firestore.collection("notes")
+            .get().addOnSuccessListener { documents ->
+                val notes = mutableListOf<Note>()
+                for (document in documents) {
+                    val note = document.toObject(Note::class.java)
+                    note.id = document.id.toIntOrNull() ?: -1
+                    notes.add(note)
+                }
+                noteAdapter.submitList(notes)
+            }
+            .addOnFailureListener { exception -> }
+    }
+
+    private fun deleteNoteFromFirestore(note: Note) {
+        firestore.collection("notes")
+            .document(note.id.toString()).delete()
+            .addOnSuccessListener {
+                getDataFromFirestore()
+            }.addOnFailureListener { exception ->
+            }
+    }
+
+    private fun updateNoteInFirestore(note: Note) {
+        val noteMap = mapOf(
+            "title" to note.title,
+            "description" to note.description, "data" to note.data,
+            "color" to note.color
+        )
+        firestore.collection("notes")
+            .document(note.id.toString()).set(noteMap)
+            .addOnSuccessListener {
+                getDataFromFirestore()
+            }.addOnFailureListener { exception ->
+            }
     }
 
     override fun onLongClick(noteModel: Note) {
@@ -83,19 +98,18 @@ class ListNoteFragment : Fragment(), OnClickItem {
         with(builder) {
             setTitle("Удалить заметку?")
             setPositiveButton("Удалить") { _, _ ->
-                App.appDataBase?.noteDao()?.deleteNote(noteModel)
-                getData()
+                deleteNoteFromFirestore(noteModel)
             }
-            setNegativeButton("Отмена") { dialog, _ ->
-                dialog.cancel()
-            }
-            show()
+            setNegativeButton("Отмена") { dialog, _ -> dialog.cancel() }
+            show ()
         }
-        builder.create()
     }
 
     override fun onClick(noteModel: Note) {
-        val action = ListNoteFragmentDirections.actionNoteListFragmentToAddNoteFragment(noteModel.id)
-        findNavController().navigate(action)
+        val action =
+            ListNoteFragmentDirections.actionNoteListFragmentToAddNoteFragment(noteModel.id)
+        findNavController().navigate(
+            action
+        )
     }
 }
