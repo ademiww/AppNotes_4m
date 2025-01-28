@@ -5,8 +5,21 @@
     <color name="pink">#FFB8C1</color>
     <color name="deep_grey">#252525</color>
     <color name="light_grey">#BDBDBD</color>
-    <color name="orange">#FD921F</color>
     <color name="card_yellow">#FDF398</color>
     <color name="card_red">#FD9D9D</color>
     <color name="card_green">#90F28E</color>
+    <color name="black2">#252525</color>
+    <color name="gray">#535353</color>
+    <color name="gray2">#7A7A7A</color>
+    <color name="gray3">#CFCFCF</color>
+    <color name="white2">#B2FFFFFF</color>
+    <color name="pink2">#FFC0CB</color>
+    <color name="yellow2">#FAF3B6</color>
+    <color name="blue2">#B7E6FB</color>
+    <color name="green2">#B7FBBA</color>
+    <color name="orange">#D88B02</color>
+    <color name="purple2">#B69CFF</color>
+    <color name="red2">#FF9E9E</color>
+    <color name="red">#FF3B3B</color>
 </resources>
+

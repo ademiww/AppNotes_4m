@@ -1,17 +1,51 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center"
-    tools:context="com.example.appnotes_4m.views.OnBoardFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.example.appnotes_4m.views.OnBoardFragment"
+    android:background="#252525">
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tab_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="150dp"
+        android:layout_marginBottom="180dp"
+        android:background="#252525"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewpanger2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
     <TextView
-        android:id="@+id/on_txt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="sdkfisdifsmid"
-        android:textSize="26sp"
-        />
+        android:id="@+id/txt_skip"
+        android:layout_width="93dp"
+        android:layout_height="23dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/skip"
+        android:textColor="#D88B02"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-</LinearLayout>
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_start"
+        android:layout_width="230dp"
+        android:layout_height="58dp"
+        android:layout_marginBottom="72dp"
+        android:background="@drawable/button_background"
+        android:backgroundTint="@null"
+        android:text="@string/next"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

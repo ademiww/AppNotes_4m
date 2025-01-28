@@ -1,58 +1,55 @@
 package com.example.appnotes_4m.adapters
 
+
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.appnotes_4m.models.Notes
-import com.example.repeatnavigation.R
+import com.example.appnotes_4m.data.model.Note
+import com.example.appnotes_4m.intetface.OnClickItem
 import com.example.repeatnavigation.databinding.ItemNoteBinding
 
-class NotesAdapter(private val notes: ArrayList<Notes>) : ListAdapter<Notes,NotesAdapter.NotesViewHolder>(DiffCallback()) {
+class Adapter(
+    private val onLongClick: OnClickItem,
+    private val onClick: OnClickItem
+) : ListAdapter<Note, Adapter.NoteViewHolder>(DiffCallback()) {
 
-    private val setBackground = listOf (
-        R.drawable.bg_red,
-        R.drawable.bg_yellow,
-        R.drawable.bg_green
-    )
+    class NoteViewHolder(private val binding: ItemNoteBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
-
-    fun setData(notes: List<Notes>) {
-        this.notes.clear()
-        this.notes.addAll(notes)
-        notifyDataSetChanged()
-    }
-
-    inner class NotesViewHolder(private val binding : ItemNoteBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(note: Notes) {
-            binding.tvTitle.text = note.title
-
+        fun bind(item: Note) {
+            binding.tvTitle.text = item.title
+            binding.tvDescription.text = item.description
+            binding.tvData.text = item.data
+            binding.bgItem.setBackgroundColor(item.color)
         }
     }
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NotesViewHolder {
-        val binding: ItemNoteBinding = ItemNoteBinding.inflate(LayoutInflater.from(parent.context),parent, false)
-        return NotesViewHolder(binding)
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteViewHolder {
+        val binding = ItemNoteBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return NoteViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: NotesAdapter.NotesViewHolder, position: Int) {
-        val background:Int = setBackground[position % setBackground.size]
-        holder.itemView.setBackgroundResource(background)
-        holder.bind(notes.get(position))
+    override fun onBindViewHolder(holder: NoteViewHolder, position: Int) {
+        holder.bind(getItem(position))
+
+        holder.itemView.setOnLongClickListener {
+            onLongClick.onLongClick(getItem(position))
+            true
+        }
+        holder.itemView.setOnClickListener {
+            onClick.onClick(getItem(position))
+        }
     }
 
-    override fun getItemCount(): Int {
-        return notes.size
-    }
-
-    class DiffCallback : DiffUtil.ItemCallback<Notes>(){
-        override fun areItemsTheSame(oldItem: Notes, newItem: Notes): Boolean {
+    class DiffCallback : DiffUtil.ItemCallback<Note>() {
+        override fun areItemsTheSame(oldItem: Note, newItem: Note): Boolean {
             return oldItem == newItem
         }
 
-        override fun areContentsTheSame(oldItem: Notes, newItem: Notes): Boolean {
+        override fun areContentsTheSame(oldItem: Note, newItem: Note): Boolean {
             return oldItem.title == newItem.title
         }
-
     }
 }

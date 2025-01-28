@@ -12,33 +12,18 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.repeatnavigation.R
 import com.example.repeatnavigation.databinding.ActivityMainBinding
 
+
 class MainActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityMainBinding
-    private lateinit var navContorller: NavController
+
+    private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(R.layout.activity_main)
 
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.container_view) as NavHostFragment
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.fragment_container) as NavHostFragment
 
-        navContorller = navHostFragment.navController
-
-        binding.bottomNavigation.setupWithNavController(navContorller)
-        val pref = PreferenceHelper()
-        pref.unit(this)
-        if (!pref.isOnBoardShown) {
-            navContorller.navigate(R.id.pagerItemFragment)
-        }
-
-        navContorller.addOnDestinationChangedListener() {_, destination, _ ->
-            if (destination.id == R.id.pagerItemFragment) {
-                binding.bottomNavigation.visibility = View.GONE
-            } else {
-                binding.bottomNavigation.visibility = View.VISIBLE
-            }
-        }
+        navController = navHostFragment.navController
     }
 }
