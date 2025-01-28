@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     id("androidx.navigation.safeargs.kotlin")
     id("com.google.devtools.ksp")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -41,6 +42,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.play.services.base)
     val nav_version = "2.8.5"
     val room_version = "2.6.1"
 
@@ -49,6 +51,12 @@ dependencies {
 //room
     implementation(libs.androidx.room.runtime)
     ksp(libs.androidx.room.compiler)
+
+    //firestore/firebase
+    //noinspection BomWithoutPlatform
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+    implementation (libs.play.services.auth)
 
     implementation (libs.lottie)
     implementation(libs.androidx.core.ktx)
@@ -59,4 +67,6 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+
 }

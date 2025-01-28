@@ -1,4 +1,4 @@
-package com.example.hw_41.ui.adapters
+package com.example.appnotes_4m.adapters
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

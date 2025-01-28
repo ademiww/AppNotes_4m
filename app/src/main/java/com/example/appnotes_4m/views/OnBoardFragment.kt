@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.example.appnotes_4m.PreferenceHelper
-import com.example.hw_41.ui.adapters.OnBoardAdapter
+import com.example.appnotes_4m.adapters.OnBoardAdapter
 import com.example.repeatnavigation.R
 import com.example.repeatnavigation.databinding.FragmentOnBoardBinding
 import com.google.android.material.tabs.TabLayout
